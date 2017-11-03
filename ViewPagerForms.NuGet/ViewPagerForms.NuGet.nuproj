@@ -36,6 +36,10 @@
       <Project>{C919E6CC-C6E3-4D51-B77F-5501CD9F775B}</Project>
       <Name>ViewPagerForms.iOS</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ViewPagerForms.Forms\ViewPagerForms.Forms.csproj">
+      <Project>{FFFB4781-EF3B-4A77-991B-A41A7852E8E1}</Project>
+      <Name>ViewPagerForms.Forms</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NuGet.Build.Packaging">

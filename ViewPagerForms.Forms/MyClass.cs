@@ -1,5 +1,5 @@
 ﻿using System;
-namespace ViewPagerForms
+namespace ViewPagerForms.Forms
 {
     public class MyClass
     {
