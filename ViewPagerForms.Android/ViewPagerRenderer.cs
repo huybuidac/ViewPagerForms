@@ -74,7 +74,6 @@ namespace ViewPagerForms
 
         void _viewPager_PageSelected(object sender, ViewPager.PageSelectedEventArgs e)
         {
-
         }
 
         protected override void OnElementPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

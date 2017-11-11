@@ -115,12 +115,16 @@ namespace ViewPagerForms
         {
             IVisualElementRenderer render;
 
-            var infinitePosition = (position - Max / 2) % _element.ItemsSource.Count();
-            if (infinitePosition < 0)
+            var realPosition = position;
+            if (_element.Infinite)
             {
-                infinitePosition += _element.ItemsSource.Count();
+                realPosition = (position - Max / 2) % _element.ItemsSource.Count();
+                if (realPosition < 0)
+                {
+                    realPosition = realPosition % _element.ItemsSource.Count();
+                    realPosition += _element.ItemsSource.Count();
+                }
             }
-            var realPosition = _element.Infinite ? infinitePosition : position;
 
             var context = _element.ItemsSource.ElementAt(realPosition);
 
