@@ -18,18 +18,6 @@ namespace ViewPagerForms
 
         public override UIViewController ViewController => _pageController;
 
-        public override void LayoutSubviews()
-        {
-            base.LayoutSubviews();
-            if (_controllers != null)
-            {
-                foreach (var vc in _controllers.Values)
-                {
-                    vc.View.Frame = NativeView.Bounds;
-                }
-            }
-        }
-
         protected override void OnElementChanged(ElementChangedEventArgs<ViewPagerControl> e)
         {
             base.OnElementChanged(e);
@@ -144,6 +132,11 @@ namespace ViewPagerForms
                     ShowViewByIndex(0);
                 }
             }
+        }
+
+        public override SizeRequest GetDesiredSize(double widthConstraint, double heightConstraint)
+        {
+            return Control.GetSizeRequest(widthConstraint, heightConstraint, 44, 44);
         }
 
         private void ShowViewByIndex(int index, bool animate = false)
@@ -284,9 +277,11 @@ namespace ViewPagerForms
             public override void ViewDidLayoutSubviews()
             {
                 base.ViewDidLayoutSubviews();
-                if (_renderer.Element != null)
+                Element parent = null;
+                if (_renderer.Element != null && _parent.TryGetTarget(out parent))
                 {
-                    _renderer.Element.Layout(View.Bounds.ToRectangle());
+                    var size = ((VisualElement)parent).Bounds.Size;
+                    _renderer.Element.Layout(new Rectangle(0, 0, size.Width, size.Height));
                 }
             }
 
@@ -296,6 +291,7 @@ namespace ViewPagerForms
                 {
                     if (_renderer != null)
                     {
+                        var element = _renderer.Element;
                         if (_renderer.Element != null)
                         {
                             _renderer.Element.Parent = null;
@@ -304,6 +300,10 @@ namespace ViewPagerForms
                         _renderer.NativeView?.Dispose();
                         _renderer.Dispose();
                         _renderer = null;
+                        if (element != null)
+                        {
+                            Platform.SetRenderer(element, null);
+                        }
                     }
                 }
                 base.Dispose(disposing);
