@@ -8,6 +8,14 @@
 * Available on NuGet: https://www.nuget.org/packages/ViewPagerForms [![NuGet]
 * Install in your PCL project and Client projects.
 
+**iOS**
+
+- Sorry, I don't know why but need below code in `AppDelegate.cs` => the lib work, I will fix it soon.
+
+```CSharp
+var r = new ViewPagerRenderer();
+```
+
 **XAML:**
 
 First add the xmlns namespace:
