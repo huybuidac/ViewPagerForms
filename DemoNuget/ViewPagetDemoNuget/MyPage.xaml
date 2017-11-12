@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="ViewPagetDemoNuget.MyPage" xmlns:cv="clr-namespace:ViewPagerForms.Forms;assembly=ViewPagerForms.Forms">
+    <ContentPage.Content>
+        <cv:ViewPagerControl x:Name="viewpager" VerticalOptions="FillAndExpand" Position="{Binding Position, Mode=TwoWay}" ItemsSource="{Binding ListItems}" Infinite="false">
+            <cv:ViewPagerControl.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout BackgroundColor="Olive" Padding="10">
+                        <StackLayout BackgroundColor="Red" VerticalOptions="FillAndExpand">
+                            <Label Text="{Binding .}" FontSize="30" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" TextColor="Yellow" />
+                        </StackLayout>
+                    </StackLayout>
+                </DataTemplate>
+            </cv:ViewPagerControl.ItemTemplate>
+        </cv:ViewPagerControl>
+    </ContentPage.Content>
+</ContentPage>

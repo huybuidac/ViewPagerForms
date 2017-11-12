@@ -27,25 +27,15 @@ namespace ViewPagerDemo
     }
 
     [AddINotifyPropertyChangedInterface]
-    public class ViewModel
+public class ViewModel
+{
+    public ObservableCollection<int> ListItems { get; set; }
+    public int Position { get; set; }
+
+    public ViewModel()
     {
-        public ObservableCollection<int> ListItems { get; set; }
-        private int _pos;
-        public int Position { get => _pos; set
-            {
-                _pos = value;
-
-            }}
-
-        public ViewModel()
-        {
-            ListItems = new ObservableCollection<int>() { 1, 2, 3, 4, 5, 6, 9 };
-            Position = 5;
-        }
-
-        public void OnPositionChanged()
-        {
-            this.Log($"Position={Position}");
-        }
+        ListItems = new ObservableCollection<int>() { 1, 2, 3, 4, 5, 6, 9 };
+        Position = 5;
     }
+}
 }
