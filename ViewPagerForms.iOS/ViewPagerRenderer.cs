@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using UIKit;
@@ -10,13 +11,43 @@ using Xamarin.Forms.Platform.iOS;
 [assembly: ExportRenderer(typeof(ViewPagerControl), typeof(ViewPagerRenderer))]
 namespace ViewPagerForms
 {
-    public class ViewPagerRenderer : ViewRenderer<ViewPagerControl, UIView>, IUIPageViewControllerDataSource
+    public interface IViewPagerRenderer
+    {
+        UIViewController CurrentViewController { get; set; }
+    }
+
+    public class ViewPagerRenderer : ViewRenderer<ViewPagerControl, UIView>, IUIPageViewControllerDataSource, IViewPagerRenderer
     {
         UIPageViewController _pageController;
+        UIViewController _currentViewController;
+
         readonly IDictionary<object, UIViewController> _controllers = new Dictionary<object, UIViewController>();
         INotifyCollectionChanged _itemSourceEvent;
 
         public override UIViewController ViewController => _pageController;
+
+        UIViewController IViewPagerRenderer.CurrentViewController
+        {
+            get => _currentViewController; 
+            set
+            {
+                _currentViewController = value;
+                if (value != null && Element != null)
+                {
+                    foreach (var kv in _controllers)
+                    {
+                        if (kv.Value == value)
+                        {
+                            if (Element.ItemsSource != null)
+                            {
+                                Element.Position = Element.ItemsSource.IndexOf(kv.Key);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
 
         protected override void OnElementChanged(ElementChangedEventArgs<ViewPagerControl> e)
         {
@@ -152,7 +183,7 @@ namespace ViewPagerForms
                 UIViewController controller;
                 if (!_controllers.TryGetValue(context, out controller))
                 {
-                    _controllers[context] = controller = new ContentViewController(Element, Element.ItemTemplate, context);
+                    _controllers[context] = controller = new ContentViewController(Element, (IViewPagerRenderer)this, context);
                 }
                 ShowViewByController(controller, animate);
             }
@@ -160,25 +191,8 @@ namespace ViewPagerForms
 
         private void ShowViewByController(UIViewController controller, bool animate = false)
         {
-            _pageController.SetViewControllers(new[] { controller }, UIPageViewControllerNavigationDirection.Forward, false, null);
-        }
-
-        /// <summary>
-        /// Callback of _pageController.SetViewControllers
-        /// </summary>
-        void _pageController_ViewControllersChanged(bool finished)
-        {
-        }
-
-        /// <summary>
-        /// Notify when change page
-        /// </summary>
-        void _pageController_DidFinishAnimating(object sender, UIPageViewFinishedAnimationEventArgs e)
-        {
-            if (e.Finished)
-            {
-                //_pageController.SetViewControllers(_controllers.Values.ToArray(), UIPageViewControllerNavigationDirection.Forward, false, null);
-            }
+            if (!_pageController.ViewControllers.Any() || controller != _pageController.ViewControllers[0])
+                _pageController.SetViewControllers(new[] { controller }, UIPageViewControllerNavigationDirection.Forward, false, null);
         }
 
         UIViewController IUIPageViewControllerDataSource.GetPreviousViewController(UIPageViewController pageViewController, UIViewController referenceViewController)
@@ -199,7 +213,7 @@ namespace ViewPagerForms
                     var prevContext = Element.ItemsSource.ElementAt(prevIndex);
                     if (!_controllers.TryGetValue(prevContext, out output))
                     {
-                        _controllers[prevContext] = output = new ContentViewController(Element, Element.ItemTemplate, prevContext);
+                        _controllers[prevContext] = output = new ContentViewController(Element, (IViewPagerRenderer)this, prevContext);
                     }
                 }
             }
@@ -224,7 +238,7 @@ namespace ViewPagerForms
                     var nextContext = Element.ItemsSource.ElementAt(nextIndex);
                     if (!_controllers.TryGetValue(nextContext, out output))
                     {
-                        _controllers[nextContext] = output = new ContentViewController(Element, Element.ItemTemplate, nextContext);
+                        _controllers[nextContext] = output = new ContentViewController(Element, (IViewPagerRenderer)this, nextContext);
                     }
                 }
             }
@@ -233,9 +247,9 @@ namespace ViewPagerForms
 
         class ContentViewController : UIViewController
         {
-            readonly WeakReference<DataTemplate> _dataTemplate;
+            readonly WeakReference<IViewPagerRenderer> _viewPagerRenderer;
             readonly WeakReference<object> _context;
-            readonly WeakReference<Element> _parent;
+            readonly WeakReference<ViewPagerControl> _parent;
             IVisualElementRenderer _renderer;
 
             public object Context
@@ -248,25 +262,35 @@ namespace ViewPagerForms
                 }
             }
 
-            public ContentViewController(Element parent, DataTemplate dataTemplate, object bindingContext)
+            public override void ViewDidAppear(bool animated)
             {
-                _dataTemplate = new WeakReference<DataTemplate>(dataTemplate);
+                base.ViewDidAppear(animated);
+                IViewPagerRenderer viewPagerRenderer;
+                _viewPagerRenderer.TryGetTarget(out viewPagerRenderer);
+                if (viewPagerRenderer != null)
+                {
+                    viewPagerRenderer.CurrentViewController = this;
+                }
+            }
+
+            public ContentViewController(ViewPagerControl parent, IViewPagerRenderer viewPagerRender, object bindingContext)
+            {
+                _viewPagerRenderer = new WeakReference<IViewPagerRenderer>(viewPagerRender);
                 _context = new WeakReference<object>(bindingContext);
-                _parent = new WeakReference<Element>(parent);
+                _parent = new WeakReference<ViewPagerControl>(parent);
             }
 
             public override void ViewDidLoad()
             {
                 base.ViewDidLoad();
-                DataTemplate dataTemplate;
                 object context;
-                Element parent;
+                ViewPagerControl parent;
                 if (_renderer == null
-                    && _dataTemplate.TryGetTarget(out dataTemplate)
                     && _context.TryGetTarget(out context)
                     && _parent.TryGetTarget(out parent))
                 {
                     VisualElement view;
+                    var dataTemplate = parent.ItemTemplate;
                     if (dataTemplate is DataTemplateSelector)
                     {
                         view = ((DataTemplateSelector)dataTemplate).SelectTemplate(context, parent).CreateContent() as VisualElement;
@@ -285,7 +309,7 @@ namespace ViewPagerForms
             public override void ViewDidLayoutSubviews()
             {
                 base.ViewDidLayoutSubviews();
-                Element parent = null;
+                ViewPagerControl parent = null;
                 if (_renderer.Element != null && _parent.TryGetTarget(out parent))
                 {
                     var size = ((VisualElement)parent).Bounds.Size;

@@ -6,7 +6,7 @@
             <Button Text="2" Clicked="Handle_Clicked2"/>
             <Button Text="6" Clicked="Handle_Clicked6"/>
         </StackLayout>
-        <cv:ViewPagerControl x:Name="viewpager" VerticalOptions="FillAndExpand" Position="3" ItemsSource="{Binding ListItems}" Infinite="true" BackgroundColor="Olive">
+        <cv:ViewPagerControl x:Name="viewpager" VerticalOptions="FillAndExpand" Position="{Binding Position, Mode=TwoWay}" ItemsSource="{Binding ListItems}" Infinite="true" BackgroundColor="Olive">
             <cv:ViewPagerControl.ItemTemplate>
                 <DataTemplate>
                     <StackLayout BackgroundColor="Red">

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Xamarin.Forms;
+using PropertyChanged;
+using ViewPagerForms.Forms;
 
 namespace ViewPagerDemo
 {
@@ -24,13 +26,26 @@ namespace ViewPagerDemo
         }
     }
 
+    [AddINotifyPropertyChangedInterface]
     public class ViewModel
     {
         public ObservableCollection<int> ListItems { get; set; }
+        private int _pos;
+        public int Position { get => _pos; set
+            {
+                _pos = value;
+
+            }}
 
         public ViewModel()
         {
             ListItems = new ObservableCollection<int>() { 1, 2, 3, 4, 5, 6, 9 };
+            Position = 5;
+        }
+
+        public void OnPositionChanged()
+        {
+            this.Log($"Position={Position}");
         }
     }
 }

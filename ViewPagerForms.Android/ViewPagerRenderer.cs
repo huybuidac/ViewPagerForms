@@ -74,6 +74,20 @@ namespace ViewPagerForms
 
         void _viewPager_PageSelected(object sender, ViewPager.PageSelectedEventArgs e)
         {
+            if (Element.Infinite)
+            {
+                var xPos = (e.Position - FormAdapter.Max / 2) % Element.ItemsSource.Count();
+                if (xPos < 0)
+                {
+                    xPos = xPos % Element.ItemsSource.Count();
+                    xPos += Element.ItemsSource.Count();
+                }
+                Element.Position = xPos;
+            }
+            else
+            {
+                Element.Position = e.Position;
+            }
         }
 
         protected override void OnElementPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

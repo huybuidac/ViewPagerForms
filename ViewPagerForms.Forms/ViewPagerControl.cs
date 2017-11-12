@@ -8,7 +8,7 @@ namespace ViewPagerForms.Forms
     {
         public static readonly BindableProperty ItemsSourceProperty = BindableProperty.Create("ItemsSource", typeof(IEnumerable), typeof(ViewPagerControl), null);
         public static readonly BindableProperty ItemTemplateProperty = BindableProperty.Create("ItemTemplate", typeof(DataTemplate), typeof(ViewPagerControl), null);
-        public static readonly BindableProperty PositionProperty = BindableProperty.Create("Position", typeof(int), typeof(ViewPagerControl), 0);
+        public static readonly BindableProperty PositionProperty = BindableProperty.Create("Position", typeof(int), typeof(ViewPagerControl), 0, BindingMode.TwoWay);
         public static readonly BindableProperty InfiniteProperty = BindableProperty.Create("Infinite", typeof(bool), typeof(ViewPagerControl), false);
         public static readonly BindableProperty RecyclerEnableProperty = BindableProperty.Create("RecyclerEnable", typeof(bool), typeof(ViewPagerControl), false);
 
