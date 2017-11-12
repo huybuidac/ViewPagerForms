@@ -10,6 +10,7 @@ namespace ViewPagerForms
     public class ViewPagerRenderer : ViewRenderer<ViewPagerControl, ViewPager>
     {
         ViewPager _viewPager;
+        private bool _ingorePositionChanged;
 
         protected override void OnElementChanged(ElementChangedEventArgs<ViewPagerControl> e)
         {
@@ -74,6 +75,7 @@ namespace ViewPagerForms
 
         void _viewPager_PageSelected(object sender, ViewPager.PageSelectedEventArgs e)
         {
+            _ingorePositionChanged = true;
             if (Element.Infinite)
             {
                 var xPos = (e.Position - FormAdapter.Max / 2) % Element.ItemsSource.Count();
@@ -88,6 +90,7 @@ namespace ViewPagerForms
             {
                 Element.Position = e.Position;
             }
+            _ingorePositionChanged = false;
         }
 
         protected override void OnElementPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -99,13 +102,16 @@ namespace ViewPagerForms
             }
             else if (e.PropertyName == ViewPagerControl.PositionProperty.PropertyName)
             {
-                if (Element.Infinite)
+                if (!_ingorePositionChanged)
                 {
-                    _viewPager.SetCurrentItem(FormAdapter.Max / 2 + Element.Position, false);
-                }
-                else
-                {
-                    _viewPager.SetCurrentItem(Element.Position, false);
+                    if (Element.Infinite)
+                    {
+                        _viewPager.SetCurrentItem(FormAdapter.Max / 2 + Element.Position, false);
+                    }
+                    else
+                    {
+                        _viewPager.SetCurrentItem(Element.Position, false);
+                    }
                 }
             }
         }
