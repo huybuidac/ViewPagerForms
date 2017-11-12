@@ -297,7 +297,7 @@ namespace ViewPagerForms
                             _renderer.Element.Parent = null;
                         }
                         _renderer.ViewController?.RemoveFromParentViewController();
-                        _renderer.NativeView?.Dispose();
+                        _renderer.NativeView?.RemoveFromSuperview();
                         _renderer.Dispose();
                         _renderer = null;
                         if (element != null)
