@@ -132,6 +132,10 @@ namespace ViewPagerForms
                     ShowViewByIndex(0);
                 }
             }
+            else if (e.PropertyName == ViewPagerControl.PositionProperty.PropertyName)
+            {
+                ShowViewByIndex(Element.Position, false);
+            }
         }
 
         public override SizeRequest GetDesiredSize(double widthConstraint, double heightConstraint)
@@ -141,13 +145,17 @@ namespace ViewPagerForms
 
         private void ShowViewByIndex(int index, bool animate = false)
         {
-            var context = Element.ItemsSource.ElementAt(index);
-            UIViewController controller;
-            if (!_controllers.TryGetValue(context, out controller))
+            int? count = Element?.ItemsSource?.Count();
+            if (count.HasValue && index > -1 && index < count)
             {
-                _controllers[context] = controller = new ContentViewController(Element, Element.ItemTemplate, context);
+                var context = Element.ItemsSource.ElementAt(index);
+                UIViewController controller;
+                if (!_controllers.TryGetValue(context, out controller))
+                {
+                    _controllers[context] = controller = new ContentViewController(Element, Element.ItemTemplate, context);
+                }
+                ShowViewByController(controller, animate);
             }
-            ShowViewByController(controller, animate);
         }
 
         private void ShowViewByController(UIViewController controller, bool animate = false)
