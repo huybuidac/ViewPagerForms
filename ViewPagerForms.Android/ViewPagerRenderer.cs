@@ -83,6 +83,17 @@ namespace ViewPagerForms
             {
                 _viewPager.Adapter = new FormAdapter(Element, _viewPager);
             }
+            else if (e.PropertyName == ViewPagerControl.PositionProperty.PropertyName)
+            {
+                if (Element.Infinite)
+                {
+                    _viewPager.SetCurrentItem(FormAdapter.Max / 2 + Element.Position, false);
+                }
+                else
+                {
+                    _viewPager.SetCurrentItem(Element.Position, false);
+                }
+            }
         }
     }
 }
