@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="ViewPagerDemo.MyPage"
+    xmlns:cv="clr-namespace:ViewPagerForms.Forms;assembly=ViewPagerForms.Forms" >
+    <StackLayout>    
+                <StackLayout Orientation="Horizontal" HeightRequest="100">
+            <Button Text="2" Clicked="Handle_Clicked2"/>
+            <Button Text="6" Clicked="Handle_Clicked6"/>
+        </StackLayout>
+        <cv:ViewPagerControl x:Name="viewpager" VerticalOptions="FillAndExpand" Position="3" ItemsSource="{Binding ListItems}" Infinite="true" BackgroundColor="Olive">
+            <cv:ViewPagerControl.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout BackgroundColor="Red">
+                        <Label Text="{Binding .}" FontSize="30" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" TextColor="Yellow"/>
+                    </StackLayout>
+                </DataTemplate>
+            </cv:ViewPagerControl.ItemTemplate>
+        </cv:ViewPagerControl>
+        <StackLayout Orientation="Horizontal" HeightRequest="100">
+            <Button Text="2" Clicked="Handle_Clicked2"/>
+            <Button Text="6" Clicked="Handle_Clicked6"/>
+        </StackLayout>
+    </StackLayout>
+</ContentPage>

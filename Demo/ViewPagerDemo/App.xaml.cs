@@ -8,7 +8,7 @@ namespace ViewPagerDemo
         {
             InitializeComponent();
 
-            MainPage = new ViewPagerDemoPage();
+            MainPage = new MyPage();
         }
 
         protected override void OnStart()

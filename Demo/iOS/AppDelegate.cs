@@ -4,6 +4,7 @@ using System.Linq;
 
 using Foundation;
 using UIKit;
+using ViewPagerForms;
 
 namespace ViewPagerDemo.iOS
 {
@@ -15,7 +16,7 @@ namespace ViewPagerDemo.iOS
             global::Xamarin.Forms.Forms.Init();
 
             LoadApplication(new App());
-
+            var r = new ViewPagerRenderer();
             return base.FinishedLaunching(app, options);
         }
     }
