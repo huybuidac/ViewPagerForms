@@ -28,7 +28,7 @@ namespace ViewPagerForms
 
         UIViewController IViewPagerRenderer.CurrentViewController
         {
-            get => _currentViewController; 
+            get => _currentViewController;
             set
             {
                 _currentViewController = value;
@@ -113,6 +113,15 @@ namespace ViewPagerForms
                         {
                             _controllers[item].Dispose();
                             _controllers.Remove(item);
+                            if (Element.ItemsSource.Count() > 0)
+                            {
+                                var newIndex = Element.Position;
+                                if (newIndex == Element.ItemsSource.Count())
+                                {
+                                    newIndex--;
+                                }
+                                ShowViewByIndex(newIndex);
+                            }
                         }
                     }
                     break;
@@ -310,9 +319,9 @@ namespace ViewPagerForms
             {
                 base.ViewDidLayoutSubviews();
                 ViewPagerControl parent = null;
-                if (_renderer.Element != null && _parent.TryGetTarget(out parent))
+                if (_renderer != null && _renderer.Element != null && _parent.TryGetTarget(out parent))
                 {
-                    var size = ((VisualElement)parent).Bounds.Size;
+                    var size = parent.Bounds.Size;
                     _renderer.Element.Layout(new Rectangle(0, 0, size.Width, size.Height));
                 }
             }
