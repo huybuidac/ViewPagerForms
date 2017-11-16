@@ -10,10 +10,29 @@
 
 **iOS**
 
-- Sorry, I don't know why but need below code in `AppDelegate.cs` => the lib work, I will fix it soon.
+- Add statement below to AppDelegate
 
 ```CSharp
-var r = new ViewPagerRenderer();
+        public override bool FinishedLaunching(UIApplication app, NSDictionary options)
+        {
+            global::Xamarin.Forms.Forms.Init();
+            ViewPagerRenderer.Init(true);
+...
+        }
+```
+
+**Android**
+
+- Add statement below to MainActivity
+
+```CSharp
+        protected override void OnCreate(Bundle bundle)
+        {
+...
+            global::Xamarin.Forms.Forms.Init(this, bundle);
+            ViewPagerRenderer.Init(true);
+...
+        }
 ```
 
 **XAML:**
