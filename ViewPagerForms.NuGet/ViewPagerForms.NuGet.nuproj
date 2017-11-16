@@ -7,7 +7,7 @@
     <ProjectGuid>{7C86137C-F506-4D02-8373-A826909B4BFA}</ProjectGuid>
     <Description>ViewPagerForms</Description>
     <PackageId>ViewPagerForms</PackageId>
-    <PackageVersion>1.0.3</PackageVersion>
+    <PackageVersion>1.0.4</PackageVersion>
     <Authors>huybuidac</Authors>
     <DevelopmentDependency>false</DevelopmentDependency>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -22,6 +22,8 @@
     <Title>ViewPagerForms</Title>
     <Summary>ViewPagerForms</Summary>
     <PackageProjectUrl>https://github.com/huy8687/ViewPagerForms</PackageProjectUrl>
+    <PackageReleaseNotes>- [Android/iOS]Handle Remove Item
+- [Android/iOS]Add option for Log</PackageReleaseNotes>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
