@@ -14,9 +14,9 @@ namespace ViewPagerDemo.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             global::Xamarin.Forms.Forms.Init();
+            ViewPagerRenderer.Init(true);
 
             LoadApplication(new App());
-            var r = new ViewPagerRenderer();
             return base.FinishedLaunching(app, options);
         }
     }

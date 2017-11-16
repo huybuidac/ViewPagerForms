@@ -7,6 +7,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using ViewPagerForms;
 
 namespace ViewPagerDemo.Droid
 {
@@ -21,6 +22,7 @@ namespace ViewPagerDemo.Droid
             base.OnCreate(bundle);
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
+            ViewPagerRenderer.Init(true);
 
             LoadApplication(new App());
         }

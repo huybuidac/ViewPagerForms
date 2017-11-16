@@ -115,5 +115,10 @@ namespace ViewPagerForms
                 }
             }
         }
+
+        public static void Init(bool log = false)
+        {
+            ObjectExtensions.AllowLog = log;
+        }
     }
 }

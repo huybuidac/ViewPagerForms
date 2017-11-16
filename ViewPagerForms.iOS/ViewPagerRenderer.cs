@@ -349,6 +349,12 @@ namespace ViewPagerForms
                 }
                 base.Dispose(disposing);
             }
+
+        }
+
+        public static void Init(bool log = false)
+        {
+            ObjectExtensions.AllowLog = log;
         }
     }
 }
