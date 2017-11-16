@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using Android.Support.V4.View;
 using Android.Views;
@@ -16,6 +19,7 @@ namespace ViewPagerForms
         private ViewPagerControl _element;
         private INotifyCollectionChanged _collectionChanged;
         private readonly IDictionary<object, IVisualElementRenderer> _dicViews = new Dictionary<object, IVisualElementRenderer>();
+        private readonly IList<WeakReference<IVisualElementRenderer>> _trashStore = new List<WeakReference<IVisualElementRenderer>>();
 
         private bool _ignoreRemove;
 
@@ -44,17 +48,55 @@ namespace ViewPagerForms
                 }
                 foreach (var render in _dicViews.Values)
                 {
-                    DisposeRender(render);
+                    DisposeRender(render, true);
                 }
                 _dicViews.Clear();
+
+                IVisualElementRenderer renderTrash = null;
+                foreach (var weakref in _trashStore)
+                {
+                    if (weakref.TryGetTarget(out renderTrash))
+                    {
+                        DisposeRender(renderTrash, true);
+                    }
+                }
+                _trashStore.Clear();
             }
             base.Dispose(disposing);
         }
 
-        private static void DisposeRender(IVisualElementRenderer render)
+        private void DisposeRender(IVisualElementRenderer render, bool dispose = false)
         {
             var formView = render.Element;
-            render.Dispose();
+            render.ViewGroup?.RemoveFromParent();
+            if (dispose)
+            {
+                render.Dispose();
+            }
+            else
+            {
+                var addToTrash = true;
+                IVisualElementRenderer model = null;
+                foreach (var weakref in _trashStore)
+                {
+                    if (weakref.TryGetTarget(out model))
+                    {
+                        if (model == render)
+                        {
+                            addToTrash = false;
+                            break;
+                        }
+                    }
+                }
+                if (addToTrash)
+                {
+                    _trashStore.Add(new WeakReference<IVisualElementRenderer>(render));
+                }
+                else
+                {
+                    this.Log($"Context={formView?.BindingContext} Added to trash");
+                }
+            }
 
             if (formView != null)
             {
@@ -65,6 +107,7 @@ namespace ViewPagerForms
 
         void _collectionChanged_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            this.Log($"Action={e.Action}");
             var oldItems = e.OldItems;
             switch (e.Action)
             {
@@ -85,7 +128,7 @@ namespace ViewPagerForms
                     {
                         if (_dicViews.ContainsKey(item))
                         {
-                            DisposeRender(_dicViews[item]);
+                            DisposeRender(_dicViews[item], true);
                             _dicViews.Remove(item);
                         }
                     }
@@ -115,17 +158,9 @@ namespace ViewPagerForms
         {
             IVisualElementRenderer render;
 
-            var realPosition = position;
-            if (_element.Infinite)
-            {
-                realPosition = (position - Max / 2) % _element.ItemsSource.Count();
-                if (realPosition < 0)
-                {
-                    realPosition = realPosition % _element.ItemsSource.Count();
-                    realPosition += _element.ItemsSource.Count();
-                }
-            }
+            int realPosition = GetRealPosition(position);
 
+            this.Log($"Position={realPosition}");
             var context = _element.ItemsSource.ElementAt(realPosition);
 
             if (!_dicViews.TryGetValue(context, out render))
@@ -146,7 +181,6 @@ namespace ViewPagerForms
                 view.Parent = _element;
                 view.Layout(_element.Bounds);
 
-                //this.Log($"InstantiateItem Context={context} Bounds={view.Bounds}");
                 _dicViews[context] = render = Platform.CreateRenderer(view);
 
                 Platform.SetRenderer(view, render);
@@ -163,13 +197,49 @@ namespace ViewPagerForms
             return render.ViewGroup;
         }
 
+        private int GetRealPosition(int position)
+        {
+            var realPosition = position;
+            if (_element.Infinite)
+            {
+                realPosition = (position - Max / 2) % _element.ItemsSource.Count();
+                if (realPosition < 0)
+                {
+                    realPosition = realPosition % _element.ItemsSource.Count();
+                    realPosition += _element.ItemsSource.Count();
+                }
+            }
+
+            return realPosition;
+        }
+
         public override void DestroyItem(ViewGroup container, int position, Java.Lang.Object obj)
         {
+            this.Log($"Position={GetRealPosition(position)}");
+
             if (!_ignoreRemove)
             {
                 container.RemoveView(obj as AView.View);
             }
             _ignoreRemove = false;
+        }
+
+        public override int GetItemPosition(Java.Lang.Object @object)
+        {
+            var result = PositionNone;
+
+            var render = @object as IVisualElementRenderer;
+            var context = render?.Element.BindingContext;
+            if (context != null && _element.ItemsSource.IndexOf(context) > -1)
+            {
+                result = PositionUnchanged;
+            }
+            else if (render != null)
+            {
+                DisposeRender(render);
+            }
+            this.Log($"Context={context} Result={result}");
+            return result;
         }
 
         public void UpdateLayout()
