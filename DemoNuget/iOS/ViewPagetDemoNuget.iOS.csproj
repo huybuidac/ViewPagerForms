@@ -94,10 +94,10 @@
       <HintPath>..\..\packages\Xamarin.Forms.2.4.0.280\lib\Xamarin.iOS10\Xamarin.Forms.Xaml.dll</HintPath>
     </Reference>
     <Reference Include="ViewPagerForms">
-      <HintPath>..\..\packages\ViewPagerForms.1.0.3\lib\xamarinios10\ViewPagerForms.dll</HintPath>
+      <HintPath>..\..\packages\ViewPagerForms.1.0.4\lib\xamarinios10\ViewPagerForms.dll</HintPath>
     </Reference>
     <Reference Include="ViewPagerForms.Forms">
-      <HintPath>..\..\packages\ViewPagerForms.1.0.3\lib\xamarinios10\ViewPagerForms.Forms.dll</HintPath>
+      <HintPath>..\..\packages\ViewPagerForms.1.0.4\lib\xamarinios10\ViewPagerForms.Forms.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

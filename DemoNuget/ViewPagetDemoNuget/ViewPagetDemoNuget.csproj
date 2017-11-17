@@ -54,7 +54,7 @@
       <HintPath>..\..\packages\Xamarin.Forms.2.4.0.280\lib\portable-win+net45+wp80+win81+wpa81\Xamarin.Forms.Xaml.dll</HintPath>
     </Reference>
     <Reference Include="ViewPagerForms.Forms">
-      <HintPath>..\..\packages\ViewPagerForms.1.0.3\lib\portable45-net45+win8+wpa81\ViewPagerForms.Forms.dll</HintPath>
+      <HintPath>..\..\packages\ViewPagerForms.1.0.4\lib\portable45-net45+win8+wpa81\ViewPagerForms.Forms.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

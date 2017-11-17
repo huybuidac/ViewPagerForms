@@ -108,13 +108,13 @@
     <Reference Include="Xamarin.Forms.Xaml">
       <HintPath>..\..\packages\Xamarin.Forms.2.4.0.280\lib\MonoAndroid10\Xamarin.Forms.Xaml.dll</HintPath>
     </Reference>
+    <Reference Include="Java.Interop" />
     <Reference Include="ViewPagerForms">
-      <HintPath>..\..\packages\ViewPagerForms.1.0.3\lib\monoandroid71\ViewPagerForms.dll</HintPath>
+      <HintPath>..\..\packages\ViewPagerForms.1.0.4\lib\monoandroid71\ViewPagerForms.dll</HintPath>
     </Reference>
     <Reference Include="ViewPagerForms.Forms">
-      <HintPath>..\..\packages\ViewPagerForms.1.0.3\lib\monoandroid71\ViewPagerForms.Forms.dll</HintPath>
+      <HintPath>..\..\packages\ViewPagerForms.1.0.4\lib\monoandroid71\ViewPagerForms.Forms.dll</HintPath>
     </Reference>
-    <Reference Include="Java.Interop" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />

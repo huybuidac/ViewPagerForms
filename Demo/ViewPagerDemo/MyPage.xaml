@@ -15,13 +15,15 @@
             </DataTemplate>
         </cv:ViewPagerControl.ItemTemplate>
     </cv:ViewPagerControl>
-        <StackLayout Orientation="Horizontal" HeightRequest="100">
-            <Button Text="2" Clicked="Handle_Clicked2"/>
-            <Button Text="6" Clicked="Handle_Clicked6"/>
-            <Button Text="Change" Clicked="Handle_Clicked_Change"/>
-            <Button Text="Remove2" Clicked="Handle_Clicked_Remove_2"/>
-            <Button Text="Remove6" Clicked="Handle_Clicked_Remove_6"/>
-            <Button Text="Insert2" Clicked="Handle_Clicked_Insert_2"/>
-        </StackLayout>
+        <ScrollView Orientation="Horizontal">
+            <StackLayout Orientation="Horizontal" HeightRequest="100">
+                <Button Text="2" Clicked="Handle_Clicked2"/>
+                <Button Text="6" Clicked="Handle_Clicked6"/>
+                <Button Text="Change" Clicked="Handle_Clicked_Change"/>
+                <Button Text="Remove2" Clicked="Handle_Clicked_Remove_2"/>
+                <Button Text="Remove6" Clicked="Handle_Clicked_Remove_6"/>
+                <Button Text="Insert2" Clicked="Handle_Clicked_Insert_2"/>
+            </StackLayout>
+        </ScrollView>
     </StackLayout>
 </ContentPage>
