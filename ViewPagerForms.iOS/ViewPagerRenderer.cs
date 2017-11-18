@@ -23,6 +23,7 @@ namespace ViewPagerForms
 
         readonly IDictionary<object, UIViewController> _controllers = new Dictionary<object, UIViewController>();
         INotifyCollectionChanged _itemSourceEvent;
+        private bool _forceUpdateVC;
 
         public override UIViewController ViewController => _pageController;
 
@@ -102,9 +103,11 @@ namespace ViewPagerForms
 
         void ViewPager_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            _forceUpdateVC = true;
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
+                    ShowViewByIndex(Element.Position);
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)
@@ -134,8 +137,10 @@ namespace ViewPagerForms
                             _controllers.Remove(item);
                         }
                     }
+                    ShowViewByIndex(Element.Position);
                     break;
                 case NotifyCollectionChangedAction.Move:
+                    ShowViewByIndex(Element.Position);
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     foreach (var vc in _controllers.Values)
@@ -200,8 +205,9 @@ namespace ViewPagerForms
 
         private void ShowViewByController(UIViewController controller, bool animate = false)
         {
-            if (!_pageController.ViewControllers.Any() || controller != _pageController.ViewControllers[0])
+            if (!_pageController.ViewControllers.Any() || controller != _pageController.ViewControllers[0] || _forceUpdateVC)
                 _pageController.SetViewControllers(new[] { controller }, UIPageViewControllerNavigationDirection.Forward, false, null);
+            _forceUpdateVC = false;
         }
 
         UIViewController IUIPageViewControllerDataSource.GetPreviousViewController(UIPageViewController pageViewController, UIViewController referenceViewController)
@@ -225,6 +231,7 @@ namespace ViewPagerForms
                         _controllers[prevContext] = output = new ContentViewController(Element, (IViewPagerRenderer)this, prevContext);
                     }
                 }
+                this.Log($"CurContext={curContext} nextIndex={prevIndex}");
             }
             return output;
         }
@@ -250,6 +257,7 @@ namespace ViewPagerForms
                         _controllers[nextContext] = output = new ContentViewController(Element, (IViewPagerRenderer)this, nextContext);
                     }
                 }
+                this.Log($"CurContext={curContext} nextIndex={nextIndex}");
             }
             return output;
         }
@@ -322,7 +330,19 @@ namespace ViewPagerForms
                 if (_renderer != null && _renderer.Element != null && _parent.TryGetTarget(out parent))
                 {
                     var size = parent.Bounds.Size;
-                    _renderer.Element.Layout(new Rectangle(0, 0, size.Width, size.Height));
+                    var x = 0d;
+                    var y = 0d;
+                    var width = size.Width;
+                    var height = size.Height;
+                    if (_renderer.Element is Xamarin.Forms.View)
+                    {
+                        var margin = (_renderer.Element as Xamarin.Forms.View).Margin;
+                        x = margin.Left;
+                        y = margin.Top;
+                        width -= margin.Left + margin.Right;
+                        height -= margin.Top + margin.Bottom;
+                    }
+                    _renderer.Element.Layout(new Rectangle(x, y, width, height));
                 }
             }
 

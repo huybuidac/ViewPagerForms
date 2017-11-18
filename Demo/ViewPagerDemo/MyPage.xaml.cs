@@ -39,8 +39,9 @@ namespace ViewPagerDemo
 
         void Handle_Clicked_Insert_2(object sender, System.EventArgs e)
         {
-            _viewModel.ListItems.Add(111111);
+            //_viewModel.ListItems.Add(111111);
             _viewModel.ListItems.Insert(2, 999);
+            //_viewModel.ListItems.Insert(1, 999);
         }
 
         void Handle_Clicked_Change(object sender, System.EventArgs e)
